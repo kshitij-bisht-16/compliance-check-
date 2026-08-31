@@ -1,0 +1,14 @@
+{
+  "_comment": "Hand-verified truth for dummy_site_plan.png (synthetic site plan). Dimensioned, so setbacks/plot are scorable — this is where the hard vision problem lives.",
+  "dimensioned": true,
+  "total_footprint_sqm": 460,
+  "unit_count": 24,
+  "plot_width_m": 30,
+  "plot_depth_m": 40,
+  "plot_area_sqm": 1200,
+  "setback_front_m": 13,
+  "setback_rear_m": 4,
+  "setback_side_m": 5,
+  "building_height_m": 19.5,
+  "floor_count": 6
+}

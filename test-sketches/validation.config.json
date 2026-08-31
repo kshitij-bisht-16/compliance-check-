@@ -1,0 +1,19 @@
+{
+  "_comment": "Tolerance bands defining what counts as an 'acceptable' extraction per field. A field passes if its error is within the band. Tune these to what DFI actually needs — e.g. a footprint within 15% may be fine for a feasibility read, exact unit counts may matter more. type: 'percent' (relative error %) or 'absolute' (raw difference).",
+  "tolerances": {
+    "total_footprint_sqm": { "type": "percent", "value": 15 },
+    "unit_count": { "type": "absolute", "value": 1 },
+    "room_count": { "type": "absolute", "value": 1 },
+    "wall_count": { "type": "percent", "value": 25 },
+    "door_count": { "type": "absolute", "value": 2 },
+    "window_count": { "type": "absolute", "value": 2 },
+    "plot_width_m": { "type": "percent", "value": 8 },
+    "plot_depth_m": { "type": "percent", "value": 8 },
+    "plot_area_sqm": { "type": "percent", "value": 10 },
+    "setback_front_m": { "type": "absolute", "value": 0.5 },
+    "setback_rear_m": { "type": "absolute", "value": 0.5 },
+    "setback_side_m": { "type": "absolute", "value": 0.5 },
+    "building_height_m": { "type": "percent", "value": 10 },
+    "floor_count": { "type": "absolute", "value": 0 }
+  }
+}

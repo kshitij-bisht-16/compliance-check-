@@ -1,0 +1,19 @@
+Here's the extracted building data from your site plan:
+
+```json
+{
+  "typology_guess": "Residential group housing (site plan)",
+  "dimensions_present": true,
+  "scale_note": "Scale 1:200 stated; overall plot 30 x 40 m dimensioned, setback gaps dimensioned in the development-data block.",
+  "plot": { "width_m": 30, "depth_m": 40, "area_sqm": 1200, "abutting_road_width_m": 12 },
+  "setbacks_m": { "front": 12.5, "rear": 4, "side": 5 },
+  "building_height_m": 19.5,
+  "floor_count": 6,
+  "rooms": [],
+  "total_footprint_sqm_estimate": 470,
+  "unit_count_estimate": 24,
+  "door_count_estimate": null,
+  "window_count_estimate": null,
+  "confidence_notes": "Dimensioned site plan, so plot, setbacks and height are read from dimension lines rather than guessed. Front setback read as ~12.5 m off the road-side dimension. No interior rooms shown on a site plan."
+}
+```

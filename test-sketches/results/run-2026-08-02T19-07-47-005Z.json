@@ -1,0 +1,221 @@
+[
+  {
+    "file": "complex_4bhk_plan.png",
+    "source": "manual",
+    "extracted": {
+      "typology_guess": "Residential apartment unit (4 BHK)",
+      "rooms": [
+        {
+          "label": "Living / Dining",
+          "approx_area_sqm": 30
+        },
+        {
+          "label": "Kitchen",
+          "approx_area_sqm": 15
+        },
+        {
+          "label": "Dining",
+          "approx_area_sqm": 15
+        },
+        {
+          "label": "Bedroom 3",
+          "approx_area_sqm": 20
+        },
+        {
+          "label": "Balcony",
+          "approx_area_sqm": 10
+        },
+        {
+          "label": "Master Bedroom",
+          "approx_area_sqm": 20
+        },
+        {
+          "label": "Master Bath",
+          "approx_area_sqm": 10
+        },
+        {
+          "label": "Bedroom 2",
+          "approx_area_sqm": 17
+        },
+        {
+          "label": "Common Bath",
+          "approx_area_sqm": 12
+        },
+        {
+          "label": "Foyer",
+          "approx_area_sqm": 10
+        }
+      ],
+      "wall_count_estimate": null,
+      "door_count_estimate": 6,
+      "window_count_estimate": 7,
+      "total_footprint_sqm_estimate": 180,
+      "unit_count_estimate": 1,
+      "confidence_notes": "Scale 1:100 and overall 15.0 x 12.0 m dimensions are visible, so footprint (180 sq.m) is scaled, not guessed. Room areas read from labels. Utility room at bottom-right was ambiguous and may have been missed in the room list; door/window counts are approximate."
+    },
+    "error": null,
+    "truth": {
+      "total_footprint_sqm": 180,
+      "unit_count": 1,
+      "room_count": 11,
+      "door_count": 7,
+      "window_count": 8
+    },
+    "comparison": {
+      "total_footprint_sqm": {
+        "predicted": 180,
+        "actual": 180,
+        "abs_error": 0,
+        "pct_error": 0,
+        "within": true
+      },
+      "unit_count": {
+        "predicted": 1,
+        "actual": 1,
+        "abs_error": 0,
+        "pct_error": 0,
+        "within": true
+      },
+      "door_count": {
+        "predicted": 6,
+        "actual": 7,
+        "abs_error": 1,
+        "pct_error": 14.29,
+        "within": true
+      },
+      "window_count": {
+        "predicted": 7,
+        "actual": 8,
+        "abs_error": 1,
+        "pct_error": 12.5,
+        "within": true
+      },
+      "room_count": {
+        "predicted": 10,
+        "actual": 11,
+        "abs_error": 1,
+        "pct_error": 9.09,
+        "within": true
+      }
+    }
+  },
+  {
+    "file": "dummy_2bhk_plan.png",
+    "source": "manual",
+    "extracted": {
+      "typology_guess": "2 BHK residential unit",
+      "rooms": [
+        {
+          "label": "Living/Dining",
+          "approx_area_sqm": 22
+        },
+        {
+          "label": "Kitchen",
+          "approx_area_sqm": 8
+        },
+        {
+          "label": "Master Bedroom",
+          "approx_area_sqm": 14
+        },
+        {
+          "label": "Bedroom 2",
+          "approx_area_sqm": 11
+        },
+        {
+          "label": "Bath",
+          "approx_area_sqm": 3
+        },
+        {
+          "label": "Toilet",
+          "approx_area_sqm": 2
+        }
+      ],
+      "wall_count_estimate": null,
+      "door_count_estimate": 5,
+      "window_count_estimate": 3,
+      "total_footprint_sqm_estimate": 130,
+      "unit_count_estimate": 1,
+      "confidence_notes": "Rough read; footprint estimated without fully trusting the dimension line."
+    },
+    "error": null,
+    "truth": {
+      "total_footprint_sqm": 108,
+      "unit_count": 1,
+      "room_count": 7,
+      "door_count": 5,
+      "window_count": 5
+    },
+    "comparison": {
+      "total_footprint_sqm": {
+        "predicted": 130,
+        "actual": 108,
+        "abs_error": 22,
+        "pct_error": 20.37,
+        "within": false
+      },
+      "unit_count": {
+        "predicted": 1,
+        "actual": 1,
+        "abs_error": 0,
+        "pct_error": 0,
+        "within": true
+      },
+      "door_count": {
+        "predicted": 5,
+        "actual": 5,
+        "abs_error": 0,
+        "pct_error": 0,
+        "within": true
+      },
+      "window_count": {
+        "predicted": 3,
+        "actual": 5,
+        "abs_error": 2,
+        "pct_error": 40,
+        "within": true
+      },
+      "room_count": {
+        "predicted": 6,
+        "actual": 7,
+        "abs_error": 1,
+        "pct_error": 14.29,
+        "within": true
+      }
+    }
+  },
+  {
+    "file": "dummy_site_plan.png",
+    "source": "manual",
+    "extracted": {
+      "typology_guess": "Residential group housing",
+      "rooms": [],
+      "wall_count_estimate": null,
+      "door_count_estimate": null,
+      "window_count_estimate": null,
+      "total_footprint_sqm_estimate": 470,
+      "unit_count_estimate": 24,
+      "confidence_notes": "Read from the development-data block and 1:200 scale; footprint slightly rounded."
+    },
+    "error": null,
+    "truth": {
+      "total_footprint_sqm": 460,
+      "unit_count": 24
+    },
+    "comparison": {
+      "total_footprint_sqm": {
+        "predicted": 470,
+        "actual": 460,
+        "abs_error": 10,
+        "pct_error": 2.17,
+        "within": true
+      },
+      "unit_count": {
+        "predicted": 24,
+        "actual": 24,
+        "abs_error": 0,
+        "pct_error": 0,
+        "within": true
+      }
+    }
+  }
+]

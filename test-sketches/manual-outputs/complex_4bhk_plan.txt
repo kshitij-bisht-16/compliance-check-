@@ -1,0 +1,25 @@
+Here's the extracted building data from the 4 BHK floor plan:
+
+```json
+{
+  "typology_guess": "Residential apartment unit (4 BHK)",
+  "rooms": [
+    {"label": "Living / Dining", "approx_area_sqm": 30},
+    {"label": "Kitchen", "approx_area_sqm": 15},
+    {"label": "Dining", "approx_area_sqm": 15},
+    {"label": "Bedroom 3", "approx_area_sqm": 20},
+    {"label": "Balcony", "approx_area_sqm": 10},
+    {"label": "Master Bedroom", "approx_area_sqm": 20},
+    {"label": "Master Bath", "approx_area_sqm": 10},
+    {"label": "Bedroom 2", "approx_area_sqm": 17},
+    {"label": "Common Bath", "approx_area_sqm": 12},
+    {"label": "Foyer", "approx_area_sqm": 10}
+  ],
+  "wall_count_estimate": null,
+  "door_count_estimate": 6,
+  "window_count_estimate": 7,
+  "total_footprint_sqm_estimate": 180,
+  "unit_count_estimate": 1,
+  "confidence_notes": "Scale 1:100 and overall 15.0 x 12.0 m dimensions are visible, so footprint (180 sq.m) is scaled, not guessed. Room areas read from labels. Utility room at bottom-right was ambiguous and may have been missed in the room list; door/window counts are approximate."
+}
+```

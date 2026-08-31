@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "dfi-compliance": {
+      "command": "node",
+      "args": ["/Users/kshitij/Desktop/DFI/dfi-compliance-check/server/mcp.js"]
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "dfi-compliance-check",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Feasibility prototype: AI extraction of concept sketches into structured building data, run through a configurable bylaw compliance rules engine.",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "mcp": "node server/mcp.js",
+    "test:sketches": "node test-sketches/run-batch-test.js",
+    "scaffold:truth": "node test-sketches/scaffold-ground-truth.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "multer": "^2.2.0",
+    "three": "^0.185.1"
+  }
+}

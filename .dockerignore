@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+.env.*
+.DS_Store
+*.log
+
+# Local data — production uses Supabase, and secrets go via Fly secrets.
+projects
+auth
+mcp
+
+# Not needed at runtime.
+test-sketches/results

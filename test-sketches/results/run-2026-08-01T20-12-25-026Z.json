@@ -1,0 +1,17 @@
+[
+  {
+    "file": "dummy_2bhk_plan.png",
+    "extracted": null,
+    "raw": null,
+    "error": "400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CdcdzcCAuwPSpcu8b7Yvq\"}",
+    "truth": {
+      "_comment": "Hand-verified truth for dummy_2bhk_plan.png (synthetic test image).",
+      "total_footprint_sqm": 108,
+      "unit_count": 1,
+      "room_count": 7,
+      "door_count": 5,
+      "window_count": 5
+    },
+    "comparison": null
+  }
+]

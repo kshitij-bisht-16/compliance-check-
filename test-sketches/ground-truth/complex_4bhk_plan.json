@@ -1,0 +1,9 @@
+{
+  "_comment": "Hand-verified truth for complex_4bhk_plan.png (synthetic, detailed single-unit plan). Dimensioned (1:100, 15x12 m) but a unit floor plan, so no site setbacks to score.",
+  "dimensioned": true,
+  "total_footprint_sqm": 180,
+  "unit_count": 1,
+  "room_count": 11,
+  "door_count": 7,
+  "window_count": 8
+}

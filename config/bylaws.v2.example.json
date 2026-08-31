@@ -1,0 +1,80 @@
+{
+  "_meta": {
+    "status": "ILLUSTRATIVE PROPOSAL — models the STRUCTURE of real development control, using UDCPR 2020 (Maharashtra) as the reference. Figures are from published UDCPR/Nagpur tables but are NOT a substitute for the sanctioned DCR of your target authority. Verify every value. This file does NOT work with the current rules engine — see the note at the bottom.",
+    "reference": "UDCPR 2020, Chapter 6 (marginal distances & FSI). See FINDINGS.md (DCR reference section).",
+    "why_this_exists": "The v1 config (config/bylaws.json) uses flat scalar setbacks/FSI. Real DCR does not: setbacks are slab tables varying by road width and building height; FSI is decomposed (basic + premium + TDR + ancillary) with exemptions. This shows the gap — the rework is the SCHEMA, not just the numbers."
+  },
+
+  "zone": "Residential",
+  "use": "Apartment / group housing",
+
+  "front_setback_m": {
+    "rule": "take the greater of the road-width band and the height override",
+    "by_abutting_road_width_m": [
+      { "up_to": 18, "value": 3.0 },
+      { "up_to": 30, "value": 4.5 },
+      { "above": 30, "value": 6.0 }
+    ],
+    "height_override_m": [
+      { "over": 14, "up_to": 24, "value": 6.0 },
+      { "over": 24, "up_to": 37.5, "value": 9.0 },
+      { "over": 37.5, "value": 12.0 }
+    ]
+  },
+
+  "side_rear_setback_m": {
+    "rule": "by building-height band (UDCPR Table 6-D, apartments/other buildings) — these are FORMULAS, not constants",
+    "bands": [
+      { "up_to_height_m": 14, "rear": "1.5", "side": "1.5" },
+      { "up_to_height_m": 24, "rear": "max(H/2 - 4, 3)", "side": "max(H/2 - 4, 3)" },
+      { "up_to_height_m": 37.5, "rear": "H/3", "side": "H/3" },
+      { "above_height_m": 37.5, "rear": "12", "side": "12" }
+    ],
+    "long_building_adjustment": "if building length or depth > 40 m, add 10% of (that dimension - 4) to the margin on the affected side(s)"
+  },
+
+  "max_height_m": {
+    "rule": "capped by abutting road width",
+    "by_abutting_road_width_m": [
+      { "up_to": 9, "value": 14 },
+      { "up_to": 15, "value": 24 },
+      { "up_to": 24, "value": 37.5 },
+      { "above": 24, "value": null, "note": "no fixed cap; high-rise (>24 m) needs CFO NOC + structural review" }
+    ]
+  },
+
+  "fsi": {
+    "note": "FSI is NOT one number — it is a stack, and each layer is computed on a different plot basis.",
+    "basic": { "value": 1.1, "plot_basis": "net plot AFTER deducting road setback & amenity/reservation" },
+    "premium": { "max_additional": "up to ~0.3–0.5 (chargeable, jurisdiction-dependent)", "plot_basis": "gross plot (no deductions)" },
+    "tdr_loading": { "max_additional": "jurisdiction & road-width dependent", "plot_basis": "gross plot" },
+    "ancillary": { "as_pct_of_admissible_fsi": "up to ~60% (free-of-FSI ancillary area, use-dependent)" },
+    "computation": {
+      "method": "P-line — outer periphery of construction, computed floor-wise",
+      "excluded_from_fsi": [
+        "ducts and voids",
+        "stilt used solely for parking",
+        "balconies up to the permitted percentage",
+        "service / utility areas listed in UDCPR Reg. 6.8"
+      ],
+      "note": "each exclusion has its own cap/condition; they are not a flat allowance"
+    }
+  },
+
+  "ground_coverage": {
+    "note": "UDCPR governs coverage INDIRECTLY through the marginal distances above, not via a single permissible %. A flat coverage % (as in v1) does not map cleanly."
+  },
+
+  "parking_ecs": {
+    "rule": "table-based by use and carpet-area band per tenement — NOT a flat 1 ECS/unit",
+    "note": "e.g. tenements above a carpet-area threshold require more ECS each; visitor parking is additional"
+  },
+
+  "_rules_engine_rework_required": [
+    "Setback checks must LOOK UP a value (by road width, by height band) and EVALUATE formulas (H/2-4, H/3), not compare against a constant.",
+    "Height check must derive the cap from road width.",
+    "FSI check must decompose basic/premium/TDR/ancillary, apply the correct plot basis to each, and subtract P-line exemptions — a real computation, not built-up ÷ plot.",
+    "Inputs must grow: abutting road width, building length/depth, per-unit carpet areas, zone/use.",
+    "Ground coverage as a flat % should probably be dropped in favour of the marginal-distance envelope."
+  ]
+}

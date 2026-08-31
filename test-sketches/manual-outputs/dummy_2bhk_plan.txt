@@ -1,0 +1,17 @@
+{
+  "typology_guess": "2 BHK residential unit",
+  "rooms": [
+    {"label": "Living/Dining", "approx_area_sqm": 22},
+    {"label": "Kitchen", "approx_area_sqm": 8},
+    {"label": "Master Bedroom", "approx_area_sqm": 14},
+    {"label": "Bedroom 2", "approx_area_sqm": 11},
+    {"label": "Bath", "approx_area_sqm": 3},
+    {"label": "Toilet", "approx_area_sqm": 2}
+  ],
+  "wall_count_estimate": null,
+  "door_count_estimate": 5,
+  "window_count_estimate": 3,
+  "total_footprint_sqm_estimate": 130,
+  "unit_count_estimate": 1,
+  "confidence_notes": "Rough read; footprint estimated without fully trusting the dimension line."
+}

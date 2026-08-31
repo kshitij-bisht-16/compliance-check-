@@ -1,0 +1,9 @@
+{
+  "_comment": "Hand-verified truth for dummy_2bhk_plan.png (synthetic test image). Dimensioned unit plan.",
+  "dimensioned": true,
+  "total_footprint_sqm": 108,
+  "unit_count": 1,
+  "room_count": 7,
+  "door_count": 5,
+  "window_count": 5
+}

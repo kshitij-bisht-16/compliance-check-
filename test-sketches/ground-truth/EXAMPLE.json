@@ -1,0 +1,6 @@
+{
+  "_comment": "Template only — rename to match an image basename in ../images/ and fill in hand-verified values. Omit any field you have not actually verified.",
+  "total_footprint_sqm": 462,
+  "unit_count": 6,
+  "room_count": 9
+}

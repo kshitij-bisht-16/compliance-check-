@@ -1,0 +1,86 @@
+{
+  "authority": "UDCPR 2020 (Maharashtra) — illustrative reference. VERIFY every figure against your target authority's sanctioned DCR before treating any result as binding.",
+  "zone": "Residential",
+  "use": "Apartment / group housing",
+  "notes": "Structured after real development control: setbacks are looked up (by road width) and computed (by height band), not flat constants. Figures follow published UDCPR/Nagpur tables but are a reference model, not a substitute for the sanctioned DCR.",
+
+  "road_width_default_m": 12,
+
+  "front_setback": {
+    "clause": "UDCPR 6.3 (front margin)",
+    "severity": "mandatory",
+    "rule": "greater of the road-width band and the height override",
+    "by_road_width_m": [
+      { "up_to": 18, "value": 3.0 },
+      { "up_to": 30, "value": 4.5 },
+      { "above": 30, "value": 6.0 }
+    ],
+    "height_override_m": [
+      { "over": 14, "up_to": 24, "value": 6.0 },
+      { "over": 24, "up_to": 37.5, "value": 9.0 },
+      { "over": 37.5, "value": 12.0 }
+    ]
+  },
+
+  "side_rear_setback": {
+    "clause": "UDCPR Table 6-D (marginal distances by height)",
+    "severity": "mandatory",
+    "rule": "by building-height band — a formula, not a constant",
+    "bands": [
+      { "up_to_height_m": 14, "formula": "1.5" },
+      { "up_to_height_m": 24, "formula": "max(H/2 - 4, 3)" },
+      { "up_to_height_m": 37.5, "formula": "H/3" },
+      { "above_height_m": 37.5, "formula": "12" }
+    ]
+  },
+
+  "max_height": {
+    "clause": "UDCPR 6.3 (height vs abutting road width)",
+    "severity": "mandatory",
+    "rule": "capped by abutting road width; > 24 m is high-rise (needs CFO NOC)",
+    "by_road_width_m": [
+      { "up_to": 9, "value": 14 },
+      { "up_to": 15, "value": 24 },
+      { "up_to": 24, "value": 37.5 },
+      { "above": 24, "value": null }
+    ]
+  },
+
+  "fsi": {
+    "clause": "UDCPR 6.1 / 6.3 (FSI stack)",
+    "severity": "mandatory",
+    "rule": "FSI is a stack: basic + premium (chargeable). Achieved = total built-up ÷ plot.",
+    "basic": 1.1,
+    "premium_max": 0.4,
+    "note": "Premium is chargeable and jurisdiction-dependent; TDR loading and free-of-FSI ancillary (~up to 60%) are excluded here for clarity."
+  },
+
+  "ground_coverage_pct": {
+    "clause": "UDCPR — governed indirectly via marginal distances",
+    "severity": "advisory",
+    "permissible": 50,
+    "note": "UDCPR controls coverage through the setbacks above, not a single %. This flat cap is an advisory sanity check only."
+  },
+
+  "parking": {
+    "clause": "UDCPR 6.9 (ECS by carpet-area band per tenement)",
+    "severity": "mandatory",
+    "rule": "ECS per tenement scales with its carpet area; visitor parking is additional",
+    "ecs_by_carpet_area_band_sqm": [
+      { "up_to": 50, "ecs": 0.5 },
+      { "up_to": 100, "ecs": 1.0 },
+      { "above": 100, "ecs": 2.0 }
+    ],
+    "ecs_per_unit_fallback": 1.0,
+    "visitor_pct": 10
+  },
+
+  "room_standards": {
+    "clause": "UDCPR 6.8 / NBC Part 3 (room sizes & ventilation)",
+    "severity": "mandatory",
+    "min_area_sqm": { "habitable": 9.5, "kitchen": 5.0, "bath": 1.8, "toilet": 1.1 },
+    "min_width_m": { "habitable": 2.4, "kitchen": 1.8, "bath": 1.2, "toilet": 0.9 },
+    "ventilation_openable_pct_of_floor": 12.5,
+    "note": "Habitable = bedroom/living/dining. Ventilation needs an openable area ≥ 1/8 of floor area — checked against a window schedule, which a plan alone rarely carries."
+  }
+}

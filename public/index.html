@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DFI · Compliance Check Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script>
+  // Set theme before first paint to avoid a flash. Defaults to dark; honours a saved choice.
+  (function () {
+    try {
+      var t = localStorage.getItem('dfi-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+</head>
+<body>
+  <div class="app">
+    <header class="app-head">
+      <span><b>DFI</b> &middot; Compliance Check Prototype</span>
+      <span class="head-right">
+        <span class="hr-tag">Feasibility test &middot; not the final product</span>
+        <span class="user-chip" id="user-chip" hidden>
+          <button class="theme-toggle" id="mcp-btn" type="button">Integrations</button>
+          <span id="user-name"></span>
+          <button class="theme-toggle" id="signout-btn" type="button">Sign out</button>
+        </span>
+        <button class="theme-toggle" id="theme-toggle" type="button">Light</button>
+      </span>
+    </header>
+
+    <section id="projects-view" class="projects-view">
+      <div class="pv-head">
+        <div>
+          <div class="eyebrow">Compliance workspace</div>
+          <h1>Projects</h1>
+          <p>Each project saves its extraction, planning inputs, compliance result and draft sheet as a file on disk (<code>projects/&lt;id&gt;.json</code>).</p>
+        </div>
+        <button class="btn" id="new-project-btn" type="button">+ New project</button>
+      </div>
+      <div class="pv-toolbar">
+        <input type="search" id="pv-search" placeholder="Search projects…">
+        <span class="status" id="pv-count"></span>
+      </div>
+      <div class="projects-grid" id="projects-grid"></div>
+      <div class="projects-empty" id="projects-empty" hidden>
+        <div class="pe-ico">◧</div>
+        <p>No projects yet. Create one to run a drawing through extraction, compliance and a draft sheet — it’ll be saved here.</p>
+        <button class="btn" id="empty-new-btn" type="button">+ New project</button>
+      </div>
+    </section>
+
+    <div id="editor-view" class="editor-view" hidden>
+    <div class="editor-bar">
+      <button class="btn ghost small" id="back-projects" type="button">&larr; Projects</button>
+      <span class="eb-name" id="editor-project-name">Untitled project</span>
+      <span class="eb-save" id="editor-save-state"></span>
+    </div>
+
+    <section class="intro">
+      <div class="eyebrow">Extraction &rarr; Rules engine</div>
+      <h1>Concept sketch &rarr; structured data &rarr; compliance check</h1>
+      <p>Upload a real concept sketch or floor plan. The image is sent server-side to Claude for structured extraction,
+        then run through a configurable bylaw rules engine. Bylaw figures are placeholders &mdash;
+        see <code>config/bylaws.json</code> &mdash; and CAD/DWG output is explicitly out of scope for this phase.</p>
+      <p class="authority-note" id="authority-note"></p>
+    </section>
+
+    <nav class="stepper" id="stepper" aria-label="Pipeline steps">
+      <button class="step-btn active" type="button" data-step="1">
+        <span class="num">1</span>
+        <span class="txt"><span class="lab">Upload &amp; extract</span><span class="dsc">Image → data</span></span>
+      </button>
+      <button class="step-btn" type="button" data-step="2">
+        <span class="num">2</span>
+        <span class="txt"><span class="lab">Compliance check</span><span class="dsc">Data → pass / review</span></span>
+      </button>
+      <button class="step-btn" type="button" data-step="3">
+        <span class="num">3</span>
+        <span class="txt"><span class="lab">Draft sheet</span><span class="dsc">Review-ready output</span></span>
+      </button>
+    </nav>
+
+    <section class="panel step active" id="step-1">
+      <h2><span class="sn">01</span>Upload &amp; extract</h2>
+      <label class="upload-box" id="upload-box" for="file-input">
+        <svg class="upload-ico" width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div class="upload-cta">Drop an image, or <span class="upload-link">browse</span></div>
+        <input type="file" id="file-input" accept="image/*">
+        <div class="hint">PNG or JPG of a concept sketch, massing diagram, or floor plan works best.</div>
+        <img id="preview" class="preview" alt="">
+      </label>
+      <div class="row">
+        <button class="btn" id="run-btn" disabled>Run extraction (API)</button>
+        <span class="status" id="status"></span>
+      </div>
+
+      <div class="sample-cta">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <span class="sc-txt">No image handy, or no API credit? <b>Load a worked sample</b> and run the whole pipeline instantly.</span>
+        <button class="btn small" id="sample-btn">Load sample project ▸</button>
+      </div>
+
+      <details class="bridge" id="bridge">
+        <summary>No API credits? Use the manual Claude.ai bridge</summary>
+        <ol class="bridge-steps">
+          <li>Open <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> (uses your normal subscription — no API cost).</li>
+          <li>Attach the same image, then paste the prompt below and send it.
+            <button class="btn ghost small" id="copy-prompt">Copy prompt</button>
+            <pre class="prompt-box" id="prompt-box">Loading prompt…</pre>
+          </li>
+          <li>Copy Claude's reply, paste it here, and load it into the app:
+            <textarea class="paste-box" id="paste-box" placeholder='Paste the JSON reply from claude.ai here'></textarea>
+            <button class="btn" id="load-pasted">Load pasted output</button>
+          </li>
+        </ol>
+      </details>
+
+      <div class="results" id="results-section" hidden>
+        <h3>Extracted building data</h3>
+        <p class="sub">Read directly off the uploaded image &mdash; not looked up or pre-written.</p>
+        <table class="table" id="rooms-table"></table>
+        <div class="cards" id="info-cards"></div>
+        <p class="note" id="confidence-note"></p>
+        <button class="btn ghost" id="toggle-raw">Show raw model output</button>
+        <pre class="raw" id="raw-output" hidden></pre>
+      </div>
+    </section>
+
+    <section class="panel step" id="step-2">
+      <h2><span class="sn">02</span>Compliance check</h2>
+      <p class="sub">Values pre-fill from extraction where available. Setbacks, height, and parking usually need manual entry &mdash;
+        a quick sketch rarely carries precise enough dimensions for those.</p>
+      <div class="resolve-diagram">
+        <div class="resolve-head">
+          <span class="rh-title">Editable schematic <span class="resolve-tag" id="resolve-tag"></span></span>
+          <div class="viewer-toolbar">
+            <div class="tb-group" id="tbg-floor" hidden>
+              <button type="button" class="tb-btn" id="floor-btn">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-4 9 4-9 4-9-4Z"/><path d="M3 13l9 4 9-4M3 17l9 4 9-4"/></svg>
+                <span>Floor: G</span>
+              </button>
+              <button type="button" class="tb-btn" id="stack-btn" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="5" rx="1"/><rect x="4" y="14" width="16" height="5" rx="1"/></svg>
+                <span>Stacked</span>
+              </button>
+            </div>
+            <div class="tb-group">
+              <button type="button" class="tb-btn" id="interior-btn" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 10h18M11 10v11"/></svg>
+                <span>Interior</span>
+              </button>
+              <button type="button" class="tb-btn" id="skel-btn" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 12 3l8 17M4 20h16M8 12h8"/></svg>
+                <span>Skeleton</span>
+              </button>
+              <button type="button" class="tb-btn" id="spin-btn" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v4h-4"/></svg>
+                <span>Spin</span>
+              </button>
+              <button type="button" class="tb-btn" id="hand-btn" hidden title="Drag to move the view (pan)">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11V7.6a1.4 1.4 0 0 1 2.8 0V11m0-3.6a1.4 1.4 0 0 1 2.8 0V11m0-3a1.4 1.4 0 0 1 2.8 0V12.5m0-1a1.4 1.4 0 0 1 2.8 0v3.5a6 6 0 0 1-6 6h-1a6 6 0 0 1-4.6-2.2l-2.3-2.9a1.4 1.4 0 0 1 2.2-1.8L6 13"/></svg>
+                <span>Hand</span>
+              </button>
+            </div>
+            <div class="tb-group view-toggle" id="view-toggle">
+              <button type="button" data-view="2d" class="active">2D</button>
+              <button type="button" data-view="3d">3D</button>
+              <button type="button" data-view="both">Both</button>
+            </div>
+          </div>
+        </div>
+        <div class="viewport-wrap" id="viewport-wrap">
+          <div class="viewport" id="viewport-2d" data-label="2D plan"><div id="resolve-svg"></div></div>
+          <div class="viewport" id="viewport-3d" data-label="3D view"><canvas id="webgl-canvas" style="display:none;"></canvas></div>
+        </div>
+        <div class="room-legend" id="room-legend" hidden></div>
+        <p class="resolve-hint" id="resolve-hint"></p>
+      </div>
+
+      <div class="form-grid">
+        <label>Plot width (m)<input type="number" id="in-plotw" placeholder="e.g. 30"></label>
+        <label>Plot depth (m)<input type="number" id="in-plotd" placeholder="e.g. 40"></label>
+        <label>Plot area (sq.m)<input type="number" id="in-plot" placeholder="e.g. 1200"></label>
+        <label>Floors<input type="number" id="in-floors" placeholder="e.g. 8"></label>
+        <label>Footprint (sq.m)<input type="number" id="in-footprint" placeholder="from extraction"></label>
+        <label>Unit count<input type="number" id="in-units" placeholder="from extraction"></label>
+        <label>Front setback (m)<input type="number" id="in-front" placeholder="manual"></label>
+        <label>Rear setback (m)<input type="number" id="in-rear" placeholder="manual"></label>
+        <label>Side setback (m)<input type="number" id="in-side" placeholder="manual"></label>
+        <label>Height (m)<input type="number" id="in-height" placeholder="manual"></label>
+        <label>Abutting road width (m)<input type="number" id="in-road" placeholder="e.g. 12"></label>
+        <label>Parking provided (ECS)<input type="number" id="in-parking" placeholder="manual"></label>
+      </div>
+
+      <div class="row" style="margin-bottom:10px;">
+        <button class="btn" id="comply-btn">Re-check compliance</button>
+        <span class="status" id="comply-status"></span>
+      </div>
+      <table class="table" id="compliance-table"></table>
+      <div id="room-checks"></div>
+    </section>
+
+    <section class="panel step" id="step-3">
+      <h2><span class="sn">03</span>Draft submission sheet</h2>
+      <p class="sub">Assembles the extracted + confirmed data into a draft submission sheet &mdash; title block, key plan, area statement,
+        compliance table, and open items. A <b>draft for architect review</b>, not a certified statutory drawing set.</p>
+      <div class="form-grid">
+        <label>Project name<input type="text" id="meta-project" placeholder="e.g. Meridian Residences"></label>
+        <label>Sheet no.<input type="text" id="meta-sheet" placeholder="e.g. A-101"></label>
+        <label>Prepared by<input type="text" id="meta-by" placeholder="e.g. DFI"></label>
+      </div>
+      <div class="row">
+        <button class="btn" id="gen-sheet-btn">Generate draft sheet</button>
+        <button class="btn ghost" id="print-sheet-btn" hidden>Print / Save as PDF</button>
+        <span class="status" id="sheet-status"></span>
+      </div>
+      <div id="sheet-wrap"></div>
+    </section>
+
+    <div class="step-controls">
+      <button class="btn ghost" id="step-prev" type="button" disabled>&larr; Back</button>
+      <span class="step-pos" id="step-pos">Step 1 of 3</span>
+      <button class="btn" id="step-next" type="button">Next &rarr;</button>
+    </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="new-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="np-title">
+      <h3 id="np-title">New project</h3>
+      <label class="np-label">Project name
+        <input type="text" id="np-name" placeholder="e.g. Meridian · Plot 12" autocomplete="off">
+      </label>
+      <div class="np-sub">How do you want to start?</div>
+      <div class="np-methods">
+        <button type="button" class="np-method" data-method="sample">
+          <span class="npm-t">Load worked sample</span>
+          <span class="npm-d">A dimensioned G+1 row house — see the whole flow instantly</span>
+        </button>
+        <button type="button" class="np-method" data-method="upload">
+          <span class="npm-t">Upload a drawing</span>
+          <span class="npm-d">Run a real sketch or floor plan through extraction (API)</span>
+        </button>
+        <button type="button" class="np-method" data-method="paste">
+          <span class="npm-t">Paste claude.ai output</span>
+          <span class="npm-d">No API credit — bring a reply from claude.ai</span>
+        </button>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" id="np-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div class="auth-view" id="auth-view" hidden>
+    <div class="auth-card">
+      <div class="auth-brand"><b>DFI</b> &middot; Compliance Check</div>
+      <h1 id="auth-title">Sign in</h1>
+      <p class="auth-sub" id="auth-sub">Access your compliance projects.</p>
+
+      <button type="button" class="google-btn" id="google-btn">
+        <svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true">
+          <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.71-1.57 2.68-3.89 2.68-6.62z"/>
+          <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.85.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/>
+          <path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33z"/>
+          <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.9 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/>
+        </svg>
+        <span id="google-btn-label">Continue with Google</span>
+      </button>
+      <div class="auth-divider"><span>or</span></div>
+
+      <form id="auth-form" novalidate>
+        <label class="auth-field" id="name-field" hidden>Name
+          <input type="text" id="auth-name" autocomplete="name" placeholder="Your name">
+        </label>
+        <label class="auth-field">Email
+          <input type="email" id="auth-email" autocomplete="email" placeholder="you@studio.com">
+        </label>
+        <label class="auth-field">Password
+          <input type="password" id="auth-password" autocomplete="current-password" placeholder="At least 8 characters">
+        </label>
+        <div class="auth-error" id="auth-error" hidden></div>
+        <button class="btn auth-submit" id="auth-submit" type="submit">Sign in</button>
+      </form>
+      <div class="auth-switch">
+        <span id="auth-switch-text">New to DFI?</span>
+        <button type="button" class="auth-link" id="auth-toggle">Create an account</button>
+      </div>
+    </div>
+    <div class="auth-note">Prototype auth &middot; passwords are scrypt-hashed and sessions use httpOnly cookies. Local feasibility build — put behind HTTPS for real use.</div>
+  </div>
+  <div class="modal-backdrop" id="mcp-modal" hidden>
+    <div class="modal mcp-modal" role="dialog" aria-modal="true" aria-labelledby="mcp-title">
+      <div class="mcp-head">
+        <h3 id="mcp-title">MCP integrations</h3>
+        <button type="button" class="mcp-x" id="mcp-close" aria-label="Close">&times;</button>
+      </div>
+      <p class="mcp-sub">Connect this app to external <b>MCP servers</b> and call their tools. Stdio servers spawn a local command — only add servers you trust.</p>
+      <div class="mcp-list" id="mcp-list"></div>
+      <details class="mcp-add" id="mcp-add">
+        <summary>+ Add MCP server</summary>
+        <label class="mcp-field">Name<input type="text" id="mcp-name" placeholder="e.g. DFI Compliance" autocomplete="off"></label>
+        <label class="mcp-field">Command<input type="text" id="mcp-command" placeholder="node" autocomplete="off"></label>
+        <label class="mcp-field">Arguments <span class="mcp-hint-inline">(space-separated)</span><input type="text" id="mcp-args" placeholder="/path/to/server.js" autocomplete="off"></label>
+        <div class="mcp-add-actions">
+          <span class="status" id="mcp-add-status"></span>
+          <button type="button" class="btn" id="mcp-connect">Connect</button>
+        </div>
+        <div class="mcp-hint">Try DFI's own server: command <code>node</code>, args <code>/Users/kshitij/Desktop/DFI/dfi-compliance-check/server/mcp.js</code></div>
+      </details>
+    </div>
+  </div>
+  <div class="toast-host" id="toast-host" aria-live="polite"></div>
+  <script type="importmap">
+  { "imports": { "three": "/three/build/three.module.js", "three/addons/": "/three/examples/jsm/" } }
+  </script>
+  <script type="module">
+    import '/webgl3d.js';
+    var cv = document.getElementById('webgl-canvas');
+    if (cv && window.DFI3D) window.DFI3D.mount(cv);
+  </script>
+  <script src="/app.js"></script>
+</body>
+</html>

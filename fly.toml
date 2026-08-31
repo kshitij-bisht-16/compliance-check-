@@ -1,0 +1,24 @@
+# Fly.io config for the DFI compliance prototype.
+# NOTE: `app` must be globally unique on Fly — change it if `fly deploy` says it's taken.
+app = "dfi-compliance-check"
+primary_region = "syd"  # Sydney — matches your Supabase project region (ap-southeast-2)
+
+[build]
+
+[http_service]
+  internal_port = 3300
+  force_https = true
+  auto_stop_machines = "stop"    # scale to zero when idle (cheapest)
+  auto_start_machines = true     # wake on the next request
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
