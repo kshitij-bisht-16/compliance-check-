@@ -1,0 +1,25 @@
+# Render.com blueprint — free tier, no credit card required.
+# New → Blueprint → connect this repo → set the secret env vars below → deploy.
+services:
+  - type: web
+    name: compliance-check
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server/index.js
+    healthCheckPath: /
+    autoDeploy: true          # redeploys on every push to the connected branch
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: SESSION_SECRET   # auto-generated + persisted by Render (sessions survive restarts)
+        generateValue: true
+      # Set these in the Render dashboard (kept out of git):
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
