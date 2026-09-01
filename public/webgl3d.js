@@ -97,10 +97,10 @@ function init(cv) {
   animate();
 }
 
-// Bright architectural-viewer backdrop: a soft blue-white sky, always light (the
-// reference viewers are bright regardless of app theme).
+// Dark architectural-viewer backdrop: a deep studio gradient. The model itself
+// stays lit by the environment probe + lights, so it reads clearly against the dark.
 function setBackdrop() {
-  const top = '#e6edf4', bot = '#f6f8fa';
+  const top = '#0f1218', bot = '#1c212b';
   const c = document.createElement('canvas'); c.width = 2; c.height = 256;
   const ctx = c.getContext('2d');
   const g = ctx.createLinearGradient(0, 0, 0, 256);
@@ -184,13 +184,13 @@ function woodCanvas() {
   }
   return c;
 }
-// Graph-paper ground (the reference's signature look): white with light grid lines.
+// Graph-paper ground: dark studio floor with subtle luminous grid lines.
 function gridCanvas() {
   const s = 512, c = document.createElement('canvas'); c.width = c.height = s; const x = c.getContext('2d');
-  x.fillStyle = '#f5f7f9'; x.fillRect(0, 0, s, s);
-  x.strokeStyle = 'rgba(150,167,184,0.30)'; x.lineWidth = 1;
+  x.fillStyle = '#161a21'; x.fillRect(0, 0, s, s);
+  x.strokeStyle = 'rgba(150,170,200,0.16)'; x.lineWidth = 1;
   for (let i = 0; i <= s; i += 32) { x.beginPath(); x.moveTo(i + 0.5, 0); x.lineTo(i + 0.5, s); x.stroke(); x.beginPath(); x.moveTo(0, i + 0.5); x.lineTo(s, i + 0.5); x.stroke(); }
-  x.strokeStyle = 'rgba(120,140,160,0.45)'; x.lineWidth = 1.5;      // heavier major border
+  x.strokeStyle = 'rgba(160,180,210,0.28)'; x.lineWidth = 1.5;      // heavier major border
   x.strokeRect(0.75, 0.75, s - 1.5, s - 1.5);
   return c;
 }
