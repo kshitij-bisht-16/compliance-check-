@@ -263,6 +263,7 @@
 
   runBtn.addEventListener('click', function () {
     if (!selectedFile) return;
+    if (window.__guestMode) { toast('AI extraction needs an account — sign in to use it. The demo loads a ready-made sample instead.', 'err'); setStatus('Sign in to run AI extraction (protects the demo’s API usage). Use “Load sample project” to continue.', true); return; }
     runBtn.disabled = true;
     showExtractionLoading();
     setStatus('Sending image to Claude for extraction…', false);
@@ -1512,6 +1513,7 @@
   }
 
   function showProjects() {
+    if (window.__guestMode) { currentProject = null; editorView.hidden = true; authView.hidden = false; window.__guestMode = false; userChip.hidden = true; return; }
     if (currentProject) doSave();
     currentProject = null;
     editorView.hidden = true; projectsView.hidden = false;
@@ -1647,12 +1649,13 @@
   // ---- autosave ----
   function scheduleSave() {
     if (!currentProject || restoring) return;
+    if (currentProject._guest) { saveState.textContent = 'Demo mode — sign in to save'; saveState.classList.remove('saved'); return; }
     saveState.textContent = 'Saving…'; saveState.classList.remove('saved');
     clearTimeout(saveTimer);
     saveTimer = setTimeout(doSave, 700);
   }
   function doSave() {
-    if (!currentProject) return;
+    if (!currentProject || currentProject._guest) return;
     api('PUT', '/api/projects/' + currentProject.id, captureState())
       .then(function (p) { currentProject = p; markSaved(); })
       .catch(function (e) { saveState.textContent = 'Save failed'; });
@@ -1712,8 +1715,27 @@
   var signoutBtn = document.getElementById('signout-btn');
   var authMode = 'login';
 
-  function showAuth() { authView.hidden = false; userChip.hidden = true; }
+  function showAuth() { window.__guestMode = false; authView.hidden = false; userChip.hidden = true; }
   function setUser(u) { userNameEl.textContent = u.name || u.email; userChip.hidden = false; }
+
+  // ---- One-click demo: explore the tool without an account (client-side only,
+  // never persists and never calls the paid extraction API). ----
+  function startDemo() {
+    window.__guestMode = true;
+    authView.hidden = true;
+    setUser({ name: 'Guest · demo' });
+    currentProject = { id: 'guest', name: 'Demo · G+1 Row House', _guest: true };
+    resetEditor();
+    editorName.textContent = 'Demo · G+1 Row House';
+    metaProject.value = 'Demo · G+1 Row House';
+    showEditor(); goToStep(1, { silent: true });
+    document.getElementById('sample-btn').click();
+    saveState.textContent = 'Demo mode — sign in to save';
+    saveState.classList.remove('saved');
+    toast('Exploring the demo — sign in anytime to save your work', 'ok');
+  }
+  var demoBtn = document.getElementById('demo-btn');
+  if (demoBtn) demoBtn.addEventListener('click', startDemo);
   function submitLabel() { return authMode === 'login' ? 'Sign in' : 'Create account'; }
 
   function setAuthMode(mode) {

@@ -154,6 +154,10 @@ p{ text-wrap:pretty; }
 .auth-submit{ width:100%; justify-content:center; text-align:center; margin-top:4px; }
 .auth-switch{ margin-top:18px; font-size:13px; color:var(--ink-soft); text-align:center; }
 .auth-link{ background:none; border:none; color:var(--blue); font:inherit; cursor:pointer; text-decoration:underline; text-underline-offset:2px; padding:0 2px; }
+.auth-demo{ margin-top:16px; padding-top:16px; border-top:1px solid var(--line, rgba(0,0,0,.08)); display:flex; flex-direction:column; align-items:center; gap:6px; }
+.auth-demo .btn.small.ghost{ border:1px solid var(--blue); color:var(--blue); }
+.auth-demo .btn.small.ghost:hover:not(:disabled){ background:var(--blue); color:var(--paper); }
+.auth-demo-note{ font-size:11px; color:var(--ink-faint); text-align:center; line-height:1.4; max-width:300px; }
 .auth-note{ font-family:var(--mono); font-size:10px; color:var(--ink-faint); max-width:400px; text-align:center; line-height:1.5; }
 .user-chip{ display:inline-flex; align-items:center; gap:10px; }
 .user-chip[hidden]{ display:none; }

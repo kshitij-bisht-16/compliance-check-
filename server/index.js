@@ -101,14 +101,34 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 // three.js served locally (offline, no CDN) for the WebGL 3D view
 app.use('/three', express.static(path.join(__dirname, '..', 'node_modules', 'three')));
 
-app.post('/api/extract', upload.single('image'), async (req, res) => {
+// Bound the cost of the paid AI extraction on a public deployment: require a
+// signed-in user, and cap calls globally per day + per user per hour. Counters
+// are in-memory (reset on restart) — fine for a demo, and cheap.
+const EXTRACT_DAILY_MAX = parseInt(process.env.EXTRACT_DAILY_MAX || '30', 10);
+const EXTRACT_USER_HOURLY_MAX = parseInt(process.env.EXTRACT_USER_HOURLY_MAX || '5', 10);
+let extractDay = { key: '', count: 0 };
+const extractUserHits = new Map(); // uid -> [timestamps]
+function extractGate(uid) {
+  const now = Date.now();
+  const dayKey = new Date().toISOString().slice(0, 10);
+  if (extractDay.key !== dayKey) extractDay = { key: dayKey, count: 0 };
+  if (extractDay.count >= EXTRACT_DAILY_MAX) return { ok: false, msg: 'Daily limit for AI extraction on this demo has been reached. Try the sample project, or check back tomorrow.' };
+  const hits = (extractUserHits.get(uid) || []).filter((t) => now - t < 3600e3);
+  if (hits.length >= EXTRACT_USER_HOURLY_MAX) return { ok: false, msg: 'You have hit the hourly extraction limit for this demo. Try the sample project.' };
+  return { ok: true, commit() { extractDay.count++; hits.push(now); extractUserHits.set(uid, hits); } };
+}
+
+app.post('/api/extract', requireAuth, upload.single('image'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No image uploaded' });
   if (!process.env.ANTHROPIC_API_KEY) {
     return res.status(500).json({ error: 'ANTHROPIC_API_KEY is not configured on the server. See .env.example.' });
   }
+  const gate = extractGate(req.user.id);
+  if (!gate.ok) return res.status(429).json({ error: gate.msg });
   try {
     const base64 = req.file.buffer.toString('base64');
     const result = await extractBuildingData(base64, req.file.mimetype);
+    gate.commit();
     res.json(result);
   } catch (err) {
     console.error('[extract]', err);
