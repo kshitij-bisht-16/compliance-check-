@@ -488,8 +488,15 @@ function build(data) {
 
   controls.target.copy(sphere.center);
   const r = modelRadius;
-  camera.position.copy(sphere.center).add(new THREE.Vector3(r * 1.05, r * 1.05, r * 1.35));
-  camera.near = r / 60; camera.far = r * 40; camera.updateProjectionMatrix();
+  // Frame the model for the actual viewport aspect. The base offset frames well
+  // on a landscape pane (aspect ≈ A0); on a narrower/portrait screen (phones) the
+  // horizontal field of view shrinks, so dolly the camera back to keep the whole
+  // building in frame. Wider-than-A0 screens keep the base framing unchanged.
+  const A0 = 1.15;
+  const aspect = camera.aspect || 1;
+  const fit = aspect < A0 ? A0 / aspect : 1;
+  camera.position.copy(sphere.center).add(new THREE.Vector3(r * 1.05 * fit, r * 1.05 * fit, r * 1.35 * fit));
+  camera.near = r / 60; camera.far = r * 40 * Math.max(1, fit); camera.updateProjectionMatrix();
   controls.update();
 }
 
