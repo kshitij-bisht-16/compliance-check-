@@ -130,7 +130,7 @@
       <div class="results" id="results-section" hidden>
         <h3>Extracted building data</h3>
         <p class="sub">Read directly off the uploaded image &mdash; not looked up or pre-written.</p>
-        <table class="table" id="rooms-table"></table>
+        <div class="table-scroll"><table class="table" id="rooms-table"></table></div>
         <div class="cards" id="info-cards"></div>
         <p class="note" id="confidence-note"></p>
         <button class="btn ghost" id="toggle-raw">Show raw model output</button>
@@ -208,7 +208,7 @@
         <button class="btn" id="comply-btn">Re-check compliance</button>
         <span class="status" id="comply-status"></span>
       </div>
-      <table class="table" id="compliance-table"></table>
+      <div class="table-scroll"><table class="table wide" id="compliance-table"></table></div>
       <div id="room-checks"></div>
     </section>
 

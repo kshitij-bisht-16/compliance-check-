@@ -265,6 +265,14 @@ p{ text-wrap:pretty; }
 .step-controls .step-pos{ font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint); }
 
 .panel{ padding:32px 30px; }
+/* Mobile: reclaim side padding and let wide tables scroll rather than crush.
+   min-width keeps columns legible so cells don't wrap one word per line. */
+@media (max-width:620px){
+  body{ overflow-x:hidden; }
+  .panel{ padding:24px 16px; }
+  table.table th, table.table td{ padding:8px 8px; }
+  .table.wide{ min-width:540px; }
+}
 .panel.step{ display:none; }
 .panel.step.active{ display:block; animation:step-fade .22s ease-out; }
 @keyframes step-fade{ from{ opacity:0; transform:translateY(5px); } to{ opacity:1; transform:none; } }
@@ -345,6 +353,9 @@ table.table tbody tr{ transition:background .12s ease; }
 table.table tbody tr:not(.row-fail):not(.row-insufficient):hover td{ background:var(--paper-deep); }
 table.table tr.row-fail td{ background:var(--flag-bg); }
 table.table tr.row-insufficient td{ background:var(--warn-bg); }
+/* Multi-column tables scroll within their own box on narrow screens, so the
+   page never grows wider than the viewport (which was clipping room names). */
+.table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; }
 td.status{ font-family:var(--mono); font-size:11px; white-space:nowrap; }
 td.status{ }
 tr.row-pass td.status{ color:var(--pass); font-weight:600; }

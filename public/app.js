@@ -669,8 +669,8 @@
     roomChecksEl.innerHTML =
       '<h3 class="rc-title">Room-by-room standards</h3>' +
       '<p class="rc-sub">Min area &amp; width per room, from the extracted geometry (bbox width is a proxy). Ventilation needs a window schedule a plan rarely carries.</p>' +
-      '<table class="table"><thead><tr><th>Room</th><th>Type</th><th class="num">Area</th><th class="num">Min</th><th class="num">Width</th><th class="num">Min</th><th>Status</th></tr></thead><tbody>' +
-      rows + '</tbody></table>';
+      '<div class="table-scroll"><table class="table wide"><thead><tr><th>Room</th><th>Type</th><th class="num">Area</th><th class="num">Min</th><th class="num">Width</th><th class="num">Min</th><th>Status</th></tr></thead><tbody>' +
+      rows + '</tbody></table></div>';
   }
   function cap1(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
 
