@@ -424,14 +424,24 @@
     renderDiagram();
   });
 
-  // Plan view — snap the 3D camera straight down to read the interior as a floor
-  // plan. Turns Interior on first (that's what carries the room floors).
+  // Plan view — a toggle. On: snap the 3D camera straight down and read the
+  // interior as a floor plan (turns Interior on for the room floors). Off: snap
+  // back to the default angled view and restore the Interior state we changed.
+  var planActive = false, planPrevInterior = false;
   var planBtn = document.getElementById('plan-btn');
   if (planBtn) planBtn.addEventListener('click', function () {
-    var needBuild = !showInterior;
-    if (needBuild) { showInterior = true; interiorBtn.classList.add('active'); renderDiagram(); }
-    var snap = function () { if (window.DFI3D && window.DFI3D.ready && window.DFI3D.topView) window.DFI3D.topView(); };
-    if (needBuild) setTimeout(snap, 80); else snap();
+    planActive = !planActive;
+    planBtn.classList.toggle('active', planActive);
+    if (planActive) {
+      planPrevInterior = showInterior;
+      var needBuild = !showInterior;
+      if (needBuild) { showInterior = true; interiorBtn.classList.add('active'); renderDiagram(); }
+      var snap = function () { if (window.DFI3D && window.DFI3D.ready && window.DFI3D.topView) window.DFI3D.topView(); };
+      if (needBuild) setTimeout(snap, 80); else snap();
+    } else {
+      if (!planPrevInterior && showInterior) { showInterior = false; interiorBtn.classList.remove('active'); renderDiagram(); }
+      else if (window.DFI3D && window.DFI3D.ready && window.DFI3D.isoView) window.DFI3D.isoView();
+    }
   });
 
   // Re-render the diagram on viewport resize so it keeps using the full width.
