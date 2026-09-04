@@ -424,6 +424,16 @@
     renderDiagram();
   });
 
+  // Plan view — snap the 3D camera straight down to read the interior as a floor
+  // plan. Turns Interior on first (that's what carries the room floors).
+  var planBtn = document.getElementById('plan-btn');
+  if (planBtn) planBtn.addEventListener('click', function () {
+    var needBuild = !showInterior;
+    if (needBuild) { showInterior = true; interiorBtn.classList.add('active'); renderDiagram(); }
+    var snap = function () { if (window.DFI3D && window.DFI3D.ready && window.DFI3D.topView) window.DFI3D.topView(); };
+    if (needBuild) setTimeout(snap, 80); else snap();
+  });
+
   // Re-render the diagram on viewport resize so it keeps using the full width.
   var diagResizeTimer = null;
   window.addEventListener('resize', function () {
@@ -504,6 +514,7 @@
     skelBtn.hidden = !wants3D || !(window.DFI3D && window.DFI3D.ready);
     handBtn.hidden = !wants3D || !(window.DFI3D && window.DFI3D.ready);
     handBtn.classList.toggle('active', pan3d);
+    if (planBtn) planBtn.hidden = !wants3D || !(window.DFI3D && window.DFI3D.ready);
     refreshToolbarGroups();
     if (currentFloor !== 'all' && levels.indexOf(currentFloor) < 0) currentFloor = levels[0] || 0;
     setFloorLabel('Floor: ' + floorLabel(currentFloor));

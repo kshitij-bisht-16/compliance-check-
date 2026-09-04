@@ -468,6 +468,12 @@ html.theme-switching *{ transition:none !important; }
 .tb-btn:hover{ background:color-mix(in srgb, var(--blue) 12%, transparent); color:var(--ink); }
 .tb-btn.active{ background:var(--blue); color:var(--paper); }
 .tb-btn.active svg{ opacity:1; }
+/* Mobile: the view-tool group (Interior/Skeleton/Spin/Hand/Plan) is too wide with
+   labels, so it clips. Show icons only there — Floor/Stacked keep their labels. */
+@media (max-width:620px){
+  .tb-group:not(#tbg-floor) .tb-btn span{ display:none; }
+  .tb-group:not(#tbg-floor) .tb-btn{ padding:7px 9px; }
+}
 .tb-btn:focus-visible{ outline:2px solid var(--blue); outline-offset:-2px; }
 /* the 2D/3D segmented toggle reuses .tb-group */
 .view-toggle button{

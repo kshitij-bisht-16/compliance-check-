@@ -512,6 +512,18 @@ window.DFI3D = {
     controls.mouseButtons.LEFT = on ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE;
     controls.touches.ONE = on ? THREE.TOUCH.PAN : THREE.TOUCH.ROTATE;
   },
-  setSkeleton: function (on) { skeleton = !!on; if (lastData) build(lastData); }
+  setSkeleton: function (on) { skeleton = !!on; if (lastData) build(lastData); },
+  // Snap to a near-top-down "floor plan" view: read the interior as a plan while
+  // keeping a slight tilt so orbit stays natural (no gimbal at true vertical).
+  topView: function () {
+    if (!controls || !camera) return;
+    const c = controls.target, r = modelRadius || 10;
+    const A0 = 1.15, aspect = camera.aspect || 1, fit = aspect < A0 ? A0 / aspect : 1;
+    const d = r * 1.9 * fit;
+    camera.up.set(0, 1, 0);
+    camera.position.set(c.x + d * 0.08, c.y + d * 0.99, c.z + d * 0.12);
+    camera.near = r / 60; camera.far = r * 40 * Math.max(1, fit); camera.updateProjectionMatrix();
+    controls.update();
+  }
 };
 window.addEventListener('resize', resize);
